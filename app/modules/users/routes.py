@@ -3,6 +3,7 @@ import pymongo
 from modules.users.student.models import Student
 from modules.users.teacher.models import Teacher
 from modules.users.parent.models import Parent
+import modules.users.utils as utils
 
 
 
@@ -22,17 +23,29 @@ def signup():
     # data = request.form
     data = request.form.to_dict() 
     email = data.get('email')
+    print(data)
+
+    if not utils.verify_name(data.get('name')):
+        return render_template("signupPage.html", error="Name must contain only English letters.")
+
+    # Validate phone number
+    if not utils.verify_phone_number(data.get('phone')):
+        return render_template("signupPage.html", error="Phone number must consist of exactly 10 digits.")
+
+    # Validate password
+    if not utils.verify_password(data.get('password')):
+        return render_template("signupPage.html", error="Password must be at least 6 characters long and contain at least one letter and one digit.")
 
     # Check if email already exists 
     if db.parents.find_one({"email": email}) or db.teacher.find_one({"email": email}) or  db.students.find_one({"email": email}):
-        return render_template("signup.html", error="Email already exists. Please use a different email.")
+        return render_template("signupPage.html", error="Email already exists. Please use a different email.")
 
     # Check if user is a student and validate parent's email
     if data.get('role') == 'Student':
         parent_email = data.get('parent_email')
         parent = db.parents.find_one({"email": parent_email, "role": "Parent"})
         if not parent:
-            return render_template("signup.html", error="Parent email not found. Please provide a valid parent email.")
+            return render_template("signupPage.html", error="Parent email not found. Please provide a valid parent email.")
 
         # Find and update the parent's document
         db.parents.update_one(
@@ -86,3 +99,5 @@ def login():
     else:
         # Login failed
         return render_template("indexParent.html", error="Invalid username or password.")
+
+

@@ -1,4 +1,7 @@
+.DS_Store
 MathTakeProject
 .MathTakeProject
+.pytest_cache
+__pycache__
 CopyMathTake
 .CopyMathTake

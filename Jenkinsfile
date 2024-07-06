@@ -22,7 +22,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'pip install flask pymongo pytest'
+                sh 'pip install flask pymongo pytest' 
             }
         }
         stage('Test') {

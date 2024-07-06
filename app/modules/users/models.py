@@ -5,10 +5,9 @@ class User:
         user = {
             "name": data["name"],
             "email": data["email"],
-            "id": data["id"],
+            "phone": data["phone"],
             "role": data["role"],
             "password": data["password"]
         }
         return user
 
- 
